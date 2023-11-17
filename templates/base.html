@@ -1,0 +1,33 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My App{% endblock %}</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet" media="screen">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+<body>
+    <nav class="navbar is-dark has-shadow" role="navigation" aria-label="main navigation">
+        {% include 'includes/navigation.html' %}
+     </nav>
+        {% block hero %}
+        {% endblock hero %}
+        {% block media %}
+        {% endblock media %}
+        {% block categories %}
+        {% endblock categories %}
+        {% block latest %}
+        {% endblock latest %}
+        {% block intro %}
+        {% endblock intro %}
+        <footer class="footer has-background-dark">
+        {% include 'includes/footer.html' %}
+    </footer>
+</body>
+</html>

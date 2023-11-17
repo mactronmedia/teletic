@@ -1,0 +1,219 @@
+{% load bulma_tags %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scrape Data</title>
+    <!-- Include Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+<body>
+    <div class="container">
+ 
+        {% if error_message %}
+            {% if not data %}
+            <div id="errorMessage" class="notification is-danger is-light">
+                <i class="fa fa-exclamation"></i> {{ error_message }} 
+            </div>
+            {% endif %}
+        {% endif %}
+
+        {% if data %}
+            <h2>Scraped Channel Data:</h2>
+            <img id="avatar" src="{{ data.avatar }}" class="image is-fluid">
+            <p><b>Name:</b> <span id="name">{{ data.name }}</span></p>
+            <p><b>Handle:</b> <span id="handle">{{ data.handle }}</span></p>
+           
+            {% if created.date > "0" %}
+            <p><b>Created:</b> {{ created.date }}</p>
+            {% endif %}
+
+            <p><b>Description:</b> <span id="description">{{ data.description }}</span></p>
+
+            {% if request.POST.function == 'channel' %}
+                <p><b>Subscribers:</b> {{ data.subscribers }}</p>
+                                 
+                {% if counter.photos >= "0" %}
+                <p><b>Photos:</b> {{ counter.photos }}</p>
+                {% endif %}
+                
+                {% if counter.videos >= "0" %}
+                <p><b>Videos:</b> {{ counter.videos }}</p>
+                {% endif %}
+
+                {% if counter.files >= "0" %}
+                <p><b>Files:</b> {{ counter.files }}</p>
+                {% endif %}
+
+                {% if counter.links >= "0" %}
+                <p><b>Links:</b> {{ counter.links }}</p>
+                {% endif %}
+
+            {% elif request.POST.function == 'group' %}
+                <p><b>Members:</b> {{ data.members }}</p>
+
+            {% elif request.POST.function == 'bot' %}
+                <!-- Additional content for 'bot' function -->
+            {% endif %}
+
+            <form id="mediaForm" method="POST">
+                <!-- Existing form fields -->
+                {% csrf_token %}
+            
+                <!-- Pass the selected function value and handle to the first form -->
+                <input type="hidden" name="function" value="{{ request.POST.function }}">
+                <input type="hidden" name="handle" value="{{ data.handle }}">
+            
+                <!-- Render form fields as a table (optional) -->
+                <table>
+                    <tr>
+                        <td>Description:</td>
+                        <td>{{ media_form.description|bulma }}</td>
+                    </tr>
+                    <tr>
+                        <td>Body:</td>
+                        <td>{{ media_form.body|bulma }}</td>
+                    </tr>
+                    <tr>
+                        <td>Category:</td>
+                        <td>{{ media_form.category|bulma }}</td>
+                    </tr>
+                    <tr>
+                        <td>Language:</td>
+                        <td>{{ media_form.language|bulma }}</td>
+                    </tr>
+                    <tr>
+                        <td>NSFW:</td>
+                        <td>{{ media_form.nsfw|bulma }}</td>
+                    </tr>
+                    <tr>
+                        <td>Tags:</td>
+                        <td>{{ media_form.tags|bulma }}</td>
+                    </tr>
+                </table>
+
+
+                <a href="#" id="toggleFormLink">Toggle Form</a>
+                <!-- Add a container to hold the form -->
+                <div id="formContainer" style="display: none;">
+                    <div class="card">
+                        <div class="card-image">
+                            <figure class="image is-4by3">
+                             </figure>
+                        </div>
+                        <div class="card-content">
+                            <div class="media">
+                                <div class="media-left">
+                                    <figure class="image is-48x48">
+                                        <img src="https://via.placeholder.com/96x96" alt="Placeholder image">
+                                    </figure>
+                                </div>
+                                <div class="media-content">
+                                    <p class="title is-4">Card Title</p>
+                                    <p class="subtitle is-6">@username</p>
+                                </div>
+                            </div>
+            
+                            <div class="content">
+                                This is a simple Bulma card. You can place any content you like here.
+                                <br>
+                                <time datetime="2023-08-16">August 16, 2023</time>
+                            </div>
+                        </div>
+                        <footer class="card-footer">
+                            <a href="#" class="card-footer-item">Like</a>
+                            <a href="#" class="card-footer-item">Comment</a>
+                            <a href="#" class="card-footer-item">Share</a>
+                        </footer>
+                    </div>
+                </div>
+                <!-- New button to manually submit the form -->
+                <button type="submit" name="handle_form_submit" class="button is-info">Submit</button>
+            </form>
+            <script>
+                const toggleFormLink = document.getElementById('toggleFormLink');
+                const formContainer = document.getElementById('formContainer');
+            
+                toggleFormLink.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    if (formContainer.style.display === 'none') {
+                        formContainer.style.display = 'block';
+                        formContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } else {
+                        formContainer.style.display = 'none';
+                    }
+                });
+            </script>
+            
+        {% else %}
+            <form id="scrapeForm" method="post" hx-post="/add/" hx-target="#scrapeForm">
+                {% csrf_token %}
+                <div class="field">
+                    <div class="control">
+                        <div class="select">
+                            <select name="function">
+                                <option value="channel">Channel</option>
+                                <option value="group">Group</option>
+                                <option value="bot">Bot</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <input type="text" name="handle" class="input" placeholder="Handle" required>
+
+                        {{ form.as_p }}
+                    </div>
+                </div>
+                <button id="scrapeButton" type="submit" class="button is-info" onclick="startScraping(this)">
+                    <span id="buttonText">Fetch Data</span>
+                    <span id="loadingSpinner" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i> Fetching...
+                    </span>
+                </button>
+            
+            </form>
+        {% endif %}
+    </div>
+
+    <!-- Include htmx library  -->
+    <script src="https://unpkg.com/htmx.org/dist/htmx.min.js"></script>  
+    <script>
+        document.getElementById('scrapeForm').addEventListener('htmx:afterSwap', function(event) {
+            var errorMessage = document.getElementById('errorMessage');
+            var data = event.detail.elt.dataset.hxTargetData;
+            if (data.error_message || data.data) {
+                errorMessage.style.display = 'none';
+            } else {
+                errorMessage.style.display = 'block';
+            }
+        });
+
+        var errorMessage = document.getElementById('errorMessage');
+        if (errorMessage) {
+         setTimeout(function() {
+            errorMessage.style.display = 'none';
+         }, 3000);
+        
+         } 
+    </script>
+ 
+
+    <script>
+        function startScraping(button) {
+            document.getElementById('buttonText').style.display = 'none';
+            document.getElementById('loadingSpinner').style.display = 'inline-block';
+            setTimeout(() => {
+                document.getElementById('buttonText').style.display = 'inline';
+                document.getElementById('loadingSpinner').style.display = 'none';
+            }, 3000); 
+        }
+    </script>
+    
+    
+    <!-- Include Bulma JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bulma@0.9.3/js/bulma.min.js"></script>
+</body>
+</html>

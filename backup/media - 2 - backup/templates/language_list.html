@@ -1,0 +1,10 @@
+{% block content %}
+  <h1>Language List</h1>
+  <ul>
+    {% for language in languages %}
+      <li><a href="{% url 'language-detail' language.slug %}">{{ language.name }}</a></li>
+    {% empty %}
+      <li>No languages found.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

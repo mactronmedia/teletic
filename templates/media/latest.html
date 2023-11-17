@@ -1,0 +1,55 @@
+<section class="section">
+  <div class="container">
+  <div class="columns is-multiline">
+      <div class="column is-full has-text-darkblue-light">
+      <h2 class="is-size-5">
+          <i class="fas fa-clock"></i>
+          <strong>Latest Telegram Media</strong>
+      </h2>
+      <p> Here is the list of the latest Telegram channels, groups, and chats.</p>
+      </div>
+  </div>
+  <div class="columns is-multiline">
+
+      {% for media in latest_media %}
+      <div class="column is-one-quarter-widescreen is-one-third-desktop is-half-tablet is-full-mobile ">
+          <a href="{% url 'media_detail' type_slug=media.type.slug media_slug=media.handle %}">
+              <div class="card">
+              <span class="new-label">
+                <span class="tag new is-size-7">New</span>
+              </span>
+          <div class="card-content">
+              <div class="media">
+              <div class="media-left">
+                  <figure class="image is-64x64">
+                  <img src="/{{ media.thumb_path }}" class="is-rounded">
+                  </figure>
+              </div>
+              <div class="media-content">
+                  <p class="title is-size-6 two-line-text">{{media.name|truncatechars:50 }}</p>
+                  <p class="subtitle is-size-7 has-text-grey ">
+                  <i class="fas fa-at"></i> {{media.handle}} </p>
+              </div>
+              </div>
+              <div class="content">
+              <div class="columns is-mobile is-flex-touch">
+                  <div class="column is-8">
+                  <p class="subtitle is-size-7">{% if media.type.slug == "channels" %}<i class="fas fa-bullhorn"></i>{% elif media.type.slug == "groups" %}<i class="fas fa-comment"></i>{% elif media.type.slug == "bots" %}<i class="fas fa-robot"></i>{% endif %}{{ media.category }}</p>
+                  </div>
+                  <div class="column">
+                      <p class="subtitle is-size-7"><i class="fas fa-users"></i> 
+                          {% if media.subscribers_count %} {{ media.subscribers_count }} 
+                          {% elif media.members_count %}  {{ media.members_count }} {% endif %}
+                      </p>
+                  </div>
+              </div>
+              </div>
+          </div>
+          </div>
+          </a>
+      </div>
+      {% endfor %} 
+      
+   </div>
+</div>
+</section>

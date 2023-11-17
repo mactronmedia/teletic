@@ -1,0 +1,10 @@
+{% block content %}
+  <h1>Type List</h1>
+  <ul>
+    {% for type in types %}
+      <li><a href="{% url 'type-detail' type.slug %}">{{ type.title }}</a></li>
+    {% empty %}
+      <li>No types found.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

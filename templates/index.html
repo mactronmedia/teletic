@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block hero %}
+    {% include 'includes/hero.html' %}
+{% endblock hero %}
+{% block media %}
+    {% include 'media/media.html' %}
+    {% include 'media/channels.html' %}
+    {% include 'media/groups.html' %}
+    {% include 'media/bots.html' %}
+    {% include 'media/latest.html' %}
+{% endblock media %}
+
+{% block intro %}
+    {% include 'includes/intro.html' %}
+{% endblock intro %}
+
+{% block categories %}
+    {% include 'includes/homepage_categories.html' %}
+{% endblock categories %}

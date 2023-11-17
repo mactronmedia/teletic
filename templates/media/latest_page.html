@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block media %}
+
+<section class="section pb-0">
+  <div class="container">
+  <div class="columns is-multiline">
+      <div class="column is-full has-text-darkblue-light">
+      <h2 class="is-size-5">
+          <i class="fas fa-thumbs-up"></i>
+          <strong>Best Telegram Media</strong>
+      </h2>
+      <p>Explore a selection of top-notch Telegram channels, groups and bots tailored to your preferences, ensuring you're consistently in the loop across a diverse spectrum of subjects. Telegram boasts a variety of channels that deliver enriching content, spanning from current affairs and amusement to learning and innovation. Remain well-informed through channels dedicated to rapid news updates, international occurrences, or specialized interests such as photography, culinary arts, or physical wellness. Participate in communities that align with your interests, effortlessly sharing insights and expertise.
+      </p>
+      </div>
+  </div>
+  <div class="columns is-multiline">
+
+      {% for media in latest_media %}
+      <div class="column is-one-quarter-widescreen is-one-third-desktop is-half-tablet is-full-mobile ">
+          <a href="{% url 'media_detail' type_slug=media.type.slug media_slug=media.handle %}">
+              <div class="card featured">
+              <span class="featured-label">
+                <span class="tag sponsored is-size-7">Sponsored</span>
+              </span>
+          <div class="card-content">
+              <div class="media">
+              <div class="media-left">
+                  <figure class="image is-64x64">
+                  <img src="/{{ media.thumb_path }}" class="is-rounded">
+                  </figure>
+              </div>
+              <div class="media-content">
+                  <p class="title is-size-6 two-line-text">{{media.name}}</p>
+                  <p class="subtitle is-size-7 has-text-grey ">
+                  <i class="fas fa-at"></i> {{media.handle}} </p>
+              </div>
+              </div>
+              <div class="content">
+              <div class="columns is-mobile is-flex-touch">
+                  <div class="column is-8">
+                  <p class="subtitle is-size-7"><i class="fas fa-robot"></i> {{ media.category }}</p>
+                  </div>
+                  <div class="column">
+                      <p class="subtitle is-size-7"><i class="fas fa-users"></i> 
+                          {% if media.subscribers_count %} {{ media.subscribers_count }} 
+                          {% elif media.members_count %}  {{ media.members_count }} {% endif %}
+                      </p>
+                  </div>
+              </div>
+              </div>
+          </div>
+          </div>
+          </a>
+      </div>
+      {% endfor %} 
+      
+   </div>
+</div>
+</section>
+
+{% endblock media %}

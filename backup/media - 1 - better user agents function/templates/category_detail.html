@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script defer src="https://use.fontawesome.com/releases/v5.15.3/js/all.js"></script>
+    <style>
+        .custom-header {
+            background-color: #101D2D;
+            color: white;
+        }
+
+        .navbar-item {
+            font-weight: bold;
+        }
+
+        .card {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease-in-out;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .featured-label {
+            background-color: #FFF8DC;
+            color: #000000;
+            border-radius: 3px;
+        }
+
+        .new-label {
+            background-color: #ddf7ff;
+            color: #000000;
+            border-radius: 3px;
+        }
+
+        /* Add padding to the search bar */
+        .field.has-addons {
+            padding: 20px;
+        }
+        .card-content {
+            padding: 20px;
+        }
+    </style>
+    <title>Gramatic</title>
+</head>
+
+<body>
+    <header class="hero custom-header">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title is-1 animate__animated animate__fadeInDown">
+                    <i class="fas fa-globe"></i> Gramatic
+                </h1>
+            </div>
+        </div>
+    </header>
+
+    <nav class="navbar is-primary" style="background-color: #44475a">
+        <div class="container">
+            <div class="navbar-menu">
+                <div class="navbar-start">
+                    <a class="navbar-item animate__animated animate__fadeInLeft" href="#"><i
+                            class="fas fa-home"></i>Home</a>
+                    <a class="navbar-item animate__animated animate__fadeInLeft" href="#"><i
+                            class="fas fa-info-circle"></i> About</a>
+                    <a class="navbar-item animate__animated animate__fadeInLeft" href="#"><i class="fas fa-cogs"></i>
+                        Services</a>
+                    <a class="navbar-item animate__animated animate__fadeInLeft" href="#"><i
+                            class="fas fa-envelope"></i> Contact</a>
+                    {% for category in categories %}
+                    <div class="column">
+                        <a href="/category/{{ category.slug }}" class="button">{{ category }}</a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="section">     
+        <div class="container">
+        <h1 class="subtitle">{{ category.name }}</h1>
+            <p>{{ category.description }}</p>
+            <form action="" method="GET">
+                <div class="field has-addons">
+                    <div class="control is-expanded">
+                        <input class="input" type="text" name="search" placeholder="Search media">
+                    </div>
+                    <div class="control">
+                        <button type="submit" class="button is-primary">Search</button>
+                    </div>
+                </div>
+            </form>
+            <div class="columns is-centered is-multiline">
+                {% for media in media_list %}
+                <div class="column is-one-quarter">
+                    {% if media.status == 3 %} 
+                    <div class="card animate__animated animate__fadeInUp featured-label">
+                        {% elif media.status == 2 %}
+                        <div class="card animate__animated animate__fadeInUp new-label">
+                            {% else %}
+                            <div class="card animate__animated animate__fadeInUp">
+                                {% endif %}
+                                <a class="card-content media"
+                                    href="">
+                                    <div class="columns is-mobile is-vcentered">
+                                        <div class="column is-narrow">
+                                            <figure class="image is-64x64">
+                                                <img class="is-rounded" src="/{{ media.thumb_path }}">
+                                            </figure>
+                                        </div>
+                                        <div class="column">
+                                            <p class="title is-size-6 two-line-text">{{ media.name|truncatechars:40  }}</p>
+                                            <div class="subtitle is-size-7 has-text-grey">
+                                                <span> {{ media.category }} > </span>
+                                                {% if media.type.id == 1 %}<span>Channel</span>
+                                                {% elif media.type.id == 2 %}<span>Group</span>
+                                                {% elif media.type.id == 3 %}<span>Bot</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="columns">
+                                        <div class="column">
+                                            <p>
+                                                <!-- Description goes here -->
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="pagination is-centered">
+                        {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}" class="pagination-previous">Previous</a>
+                        {% endif %}
+                        <ul class="pagination-list">
+                            {% for page in page_obj.paginator.page_range %}
+                            {% if page_obj.number == page %}
+                            <li>
+                                <a href="?page={{ page }}" class="pagination-link is-current">{{ page }}</a>
+                            </li>
+                            {% else %}
+                            <li>
+                                <a href="?page={{ page }}" class="pagination-link">{{ page }}</a>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                        {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}" class="pagination-next">Next</a>
+                        {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="content has-text-centered">
+            <p>
+                &copy; 2023 Your Website. All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+
+</html>

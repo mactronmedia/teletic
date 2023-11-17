@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scrape Data</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        {% if error_message %}
+            <p>{{ error_message }}</p>
+        {% endif %}
+
+        {% if data %}
+            <h2>Scraped Channel Data:</h2>
+            <img id="avatar" src="{{ data.avatar }}" class="img-fluid"></p>
+            <p><b>Handle:</b> <span id="handle">{{ data.handle }}</span></p>
+            <p><b>Name:</b> <span id="name">{{ data.name }}</span></p>
+            <p><b>Description:</b> <span id="description">{{ data.description }}</span></p>
+
+            {% if request.POST.function == 'channel' %}
+            <p><b>Subscribers:</b> {{ data.subscribers }}</p>
+            {% elif request.POST.function == 'group' %}
+            <p><b>Members:</b> {{ data.subscribers }}</p>
+            {% elif request.POST.function == 'bot' %}
+            {% endif %}
+            <p><b>Photos:</b> {{ counter.photos }}</p>
+            <p><b>Videos:</b> {{ counter.videos }}</p>
+            <p><b>Files:</b> {{ counter.files }}</p>
+            <p><b>Links:</b> {{ counter.links }}</p>
+
+            <p>Body: {{ data.body }}</p>
+
+            <form id="mediaForm" method="POST">
+                <!-- Existing form fields -->
+        
+                {% csrf_token %}
+        
+                <!-- Pass the selected function value to the first form -->
+                <input type="hidden" name="function" value="{{ request.POST.function }}">
+                <input type="hidden" name="handle" value="{{ data.handle }}">
+        
+                <!-- Render form fields as a table -->
+                {{ media_form.as_p }}
+        
+                <!-- New button to manually submit the form -->
+                <button type="submit" name="handle_form_submit" class="btn btn-primary">Submit Form</button>
+            </form>
+        {% else %}
+        <form id="scrapeForm" method="post" hx-post="">
+            {% csrf_token %}
+            <select name="function" class="form-select">
+                <option value="channel">Channel</option>
+                <option value="group">Group</option>
+                <option value="bot">Bot</option>
+            </select>
+            <input type="text" name="handle" class="form-control" placeholder="Handle">
+            <button type="submit" class="btn btn-primary">Scrape</button>
+        </form>
+        {% endif %}
+    </div>
+
+    <!-- Include htmx library -->
+    <script src="https://unpkg.com/htmx.org/dist/htmx.min.js"></script>
+    
+    <script>
+        // Handle form submission using htmx
+        document.getElementById('scrapeForm').addEventListener('htmx:afterSwap', function(event) {
+            if (event.detail.target.matches('#scrapeForm')) {
+                // Form was submitted, handle the response
+                var data = event.detail.response.data;
+                if (data) {
+                    // Update the DOM with scraped data
+                    document.getElementById('avatar').src = data.avatar;
+                    document.getElementById('handle').textContent = data.handle;
+                    document.getElementById('name').textContent = data.name;
+                    document.getElementById('description').textContent = data.description;
+                }
+            }
+        });
+    </script>
+
+    <!-- Include Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

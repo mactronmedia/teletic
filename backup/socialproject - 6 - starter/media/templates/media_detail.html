@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ media.name }} @{{ media.handle }}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <style>
+        /* Add any additional custom styles here */
+    </style>
+</head>
+<body>
+    <section class="section">
+        <div class="container">
+            <h1 class="title">{{ media.name }} Details</h1>
+            <img src="/{{ media.logo_path }}" class="image">
+            <p><strong>Name:</strong> {{ media.name }}</p>
+            <p><strong>Handle:</strong> @{{ media.handle }} </p>
+            <p><strong>Description:</strong> {{ media.description }}</p>
+            <p><strong>Body:</strong> {{ media.body }}</p>
+            <p><strong>Submitted:</strong> {{ media.published }}</p>
+            <p><strong>Category:</strong> {{ object.category.name }}
+            <p><strong>Language:</strong> {{ object.language.name }}</p> 
+            <p><strong>Type:</strong> {{ object.type }}</p> 
+            {% if tags %}
+            <p><strong>Tags:</strong>
+    
+                {% for tag in tags %}
+                    #{{ tag.name }}
+                {% endfor %}
+ 
+            {% else %}
+            <p>No tags found for this media.</p>
+            {% endif %}
+
+        </div>
+        <div class="container"> 
+            <h4 class="title is-4">Channel Statistics</h4>
+
+            <p><strong>Subscribers:</strong> {{ subscribers }}</p>
+            <p><strong>Photos:</strong> {{ photos }}</p>
+            <p><strong>Videos:</strong> {{ videos }}</p>
+            <p><strong>Files:</strong> {{ files }}</p>
+            <p><strong>Links:</strong> {{ links }}</p>
+
+            
+            <p>View or join The Funded Trader channel in your Telegram, by clicking on the "View Channel" button.</p>
+
+            <a href="tg://resolve?domain={{ media.handle }}" class="button is-success">View Channel</a>
+            <div class="help is-size-1-mobile">
+                <span class="has-text-danger">Attention:</span> Please conduct your own research before trusting the content. Especially if they asked you for money.
+            </div>
+
+        </div>
+
+    </section>
+</body>
+</html>

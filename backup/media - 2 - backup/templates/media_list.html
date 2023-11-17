@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Media List</title>
+</head>
+<body>
+    <h1>Media List</h1>
+    <ul>
+        {% for media in media_list %}
+            <li>
+                <h2><a href="{% url 'media-detail' media.pk %}">{{ media.name }}</a></h2>
+                <p>Description: {{ media.description }}</p>
+                <p>Category: {{ media.category.name }}</p>
+                <p>Language: {{ media.language.name }}</p>
+                <p>Type: {% if media.type %}{{ media.type.title }}{% else %}N/A{% endif %}</p>
+                <p>NSFW: {% if media.nsfw %}Yes{% else %}No{% endif %}</p>
+                <p>Status: {{ media.get_status_display }}</p>
+                <p>Published: {{ media.published }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

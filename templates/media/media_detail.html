@@ -1,0 +1,236 @@
+{% extends 'base.html' %} 
+{% block media %}
+{% load bulma_tags %}
+  <section class="section is-padding-top-less">
+    <div class="container">
+      <div id="channel-show" class="columns is-centered is-multiline">
+        <div class="column is-full">
+          <div class="card breadcrumb-card">
+            <nav class="breadcrumb" aria-label="breadcrumbs">
+              <ol vocab="http://schema.org/" typeof="BreadcrumbList">
+                <li property="itemListElement" typeof="ListItem">
+                  <i class="fas fa-map-marker-alt"></i>
+                  <a property="item" typeof="WebPage" href="/" title="Home Page">
+                    <span property="name"> Home</span>
+                  </a>
+                  <meta property="position" content="1">
+                </li>
+                <li property="itemListElement" typeof="ListItem">
+                  <a property="item" typeof="WebPage" href="/{{ media.type.slug }}/"
+                    title="Telegram Channels">
+                    <span property="name">{{ media.type.name }}</span>
+                  </a>
+                  <meta property="position" content="2">
+                </li>
+                <li property="itemListElement" typeof="ListItem">
+                  <a property="item" typeof="WebPage" href="/category/{{ media.category.slug }}/"
+                    title="{{ media.category }}">
+                    <span property="name">{{ media.category }}</span>
+                  </a>
+                  <meta property="position" content="3">
+                </li>
+                <li property="itemListElement" typeof="ListItem">
+                  <a property="item" typeof="WebPage" href="/{{ media.type.slug }}/{{ media.handle }}/">
+                    <span property="name">{{ media.name }}</span>
+                  </a>
+                  <meta property="position" content="4">
+                </li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+        <div id="sidebar" class="column is-one-quarter">
+          <div class="is-sticky">
+            <div class="card">
+              <figure class="image">
+                <img src="/{{ media.logo_path }}" class="image">
+              </figure>
+              <div class="card-content">
+                <div class="has-text-centered">
+                  <div class="columns is-mobile is-gapless is-marginless">
+                    <div class="column">
+                      <a href="tg://resolve?domain={{ media.handle }}" title="{{ media.name }}"
+                        class="button is-primary is-fullwidth" rel="nofollow">
+                        <i class="fab fa-telegram-plane"></i>
+                        {% if media.type.slug == "channels" %}
+                          <b>View Channel</b>
+                          {% elif media.type.slug == "groups" %}
+                          <b>View Group</b>
+                          {% elif media.type.slug == "bots" %}
+                          <b>View Bot</b>
+
+                      {% endif %}
+                    </a>
+                    </div>
+                  </div>
+                  <div><img src="/{{ qr_code_image_path }}" alt="QR Code"></div>
+                  <div class="help has-text-centered is-size-6-mobile">
+                    <span class="has-text-danger">Attention:</span> Please conduct your own research before trusting the
+                    content. Especially if they asked you for money.
+                  </div>
+                  <br>
+                  <p class="has-text-grey is-size-7 is-size-6-mobile">
+                    <a href="#" onclick="if (!window.__cfRLUnblockHandlers) return false; help()"
+                      data-cf-modified-3363b1c55e5cea5fbf391af8->Can&#039;t Join?</a>
+                    <i class="fas fa-link fa-xs"></i>
+                    t.me/{{ media.handle }}
+                  </p>
+                </div>
+              </div>
+              <div class="card-footer">
+                <div class="card-footer-item">
+                  <p>
+                    <span title="Rate" class="colored-rating">
+                      <i class="far fa-grin-hearts star5"></i>4.62</span>
+                    <span class="has-text-grey-lighter">/</span>
+                    <span><i class="far fa-user"></i>60</span>
+                  </p>
+                </div>
+                <div class="card-footer-item">
+                  <div class="subtitle is-6">
+                    <span><i class="fas fa-users"></i>{{ subscribers }}</span> 
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card level is-mobile is-size-7 has-text-grey-light has-padding">
+              <div class="level-item">
+                <span class="help has-text-centered"><i class="fas fa-sync-alt"></i> {{ media.published_at|date:"F d, Y" }} </span>
+              </div>
+              <div class="level-item">
+                <span class="help has-text-centered"><i class="fas fa-fire"></i> {{ subscribers }} </span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-content">
+                <div class="has-text-centered">
+                  <div class="columns is-mobile is-gapless is-marginless"> 
+                   <div class="column">
+                    <input readonly class="input" type="text" value="{{ request.build_absolute_uri }}" id="linkInput">
+                   <div class="column">
+                      <button class="button is-primary is-fullwidth" onclick="copyLink()" id="copyButton">Copy</button>
+
+                   </div>
+                 </div>
+              </div>
+          </div>
+        </div>
+      </div>
+          <script>
+              function copyLink() {
+                  var copyText = document.getElementById("linkInput");
+                  copyText.select();
+                  copyText.setSelectionRange(0, 99999); /* For mobile devices */
+                  document.execCommand("copy");
+                  var copyButton = document.getElementById("copyButton");
+                  copyButton.innerText = "Copied";
+              }
+          </script>
+          </div>
+        </div>
+
+        
+        <div class="column is-three-quarters">
+          <div class="columns is-multiline">
+            <div class="column is-full">
+              <div class="card">
+                <div class="card-content">
+
+                  <h1 class="is-size-4 has-text-weight-bold">
+                    <i class="fas fa-bullhorn"></i>
+                    {{ media.name }}
+                    {% if media.official == 1 %}
+                    <span class="official-icon"> 
+                        <i class="fas fa-check-circle " title="Official"></i>
+                     {% endif %}
+                    </span>  
+                  </h1>
+                    <div class="is-flex">
+                         @{{ media.handle }}
+                       <hr class="mt-3 mb-3"> 
+
+                    </div>
+                    <hr class="mt-3 mb-3"> 
+
+                  <p class="has-text-grey">
+                    {{media.description  }}
+                  </p>
+                  <br>
+                  <p>
+                    {% for tag in tags %}
+                    #{{ tag.name }}
+                  {% endfor %}
+                  </p>
+                  <br>
+                  <p class="has-text-darkblue-light">
+                    View or join <strong>{{ media.name }}</strong> channel in your Telegram, by clicking on the
+                    "View Channel" button.
+                  </p>
+                </div>
+                <footer class="card-footer">
+                  <p class="card-footer-item is-size-6"> Category: {{ media.category }}</p>
+                  <p class="card-footer-item is-size-6"> Type: {{ media.type }}</p>
+                  <p class="card-footer-item is-size-6"> Language: {{ media.language }}</p>
+                  <p class="card-footer-item is-size-6"> Published: {{ media.published_at|date:"F d, Y" }}</p>
+                </footer>
+              </div>
+            </div>
+            <div class="column is-full">
+              <div class="card">
+                <div class="card-content">
+                  <p class="is-size-5 has-text-weight-bold">
+                    Channel Statistics
+                  </p>
+                </div>
+                <footer class="card-footer">                   
+                    {% if media.type.slug == "channels" %}
+                    <p class="card-footer-item is-size-6" title="Subscribers"> <i class="fas fa-users"></i> {{ subscribers }}</p>
+                    {% elif media.type.slug == "groups" %}
+                    <p class="card-footer-item is-size-6" title="Members"> <i class="fas fa-users"></i> {{ members }}</p>
+                    {% endif %}
+
+                  <p class="card-footer-item is-size-6" title="Photos"> <i class="fas fa-images"></i> {{ photos }}</p>
+                  <p class="card-footer-item is-size-6" title="Videos"> <i class="fas fa-video"></i> {{ videos }}</p>
+                  <p class="card-footer-item is-size-6" title="Files"> <i class="fas fa-file"></i> {{ files }}</p>
+                  <p class="card-footer-item is-size-6" title="Links"> <i class="fas fa-link"></i> {{ links }}</p>
+                </footer>
+              </div>
+            </div>
+
+            <div class="column is-full">
+              <div class="card">
+                <div class="card-content content">
+                  <div class="is-size-5 has-text-weight-bold">Description</div>
+                    <hr class="mt-3 mb-3"> 
+                    <p class="has-text-grey"> {{ media.description }}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="column is-full">
+              <div class="card">
+                <div class="card-content content">
+                  <div class="is-size-5 has-text-weight-bold">Comments</div>
+                    <hr class="mt-3 mb-3"> 
+
+                    {% for comment in object.comment_set.all %}
+                    <li>{{ comment.text }}</li>
+                {% endfor %}
+
+                    <form method="post">
+                      {% csrf_token %}
+                      {{ comment_form|bulma }}
+                      <button type="submit" class="button is-primary">Submit</button>
+                    </form>
+
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  {% endblock media %}
